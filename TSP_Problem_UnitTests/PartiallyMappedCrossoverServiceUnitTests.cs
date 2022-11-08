@@ -18,7 +18,7 @@ namespace TSP_Problem_UnitTests
         public void PartiallyMappedCrossoverServiceUnitTests_CreateEmptyGenotypeWithSegment_ShouldNotBeNull() 
         {
             var segment = new List<int>() { 3, 4, 5, 6 };
-            var genotype = _partiallyMappedCrossoverService.CreateEmptyGenotypeWithSegment(size: 8, firstCutPoint: 3, secondCutPoint: 6, segment: segment);
+            var genotype = _partiallyMappedCrossoverService.CreateEmptyGenotypeWithSegment(size: 8, firstCutPoint: 2, secondCutPoint: 5, segment: segment);
             Assert.IsNotNull(genotype);
             Assert.IsTrue(8 == genotype.Count);
             Assert.AreEqual(genotype[1], 0);
