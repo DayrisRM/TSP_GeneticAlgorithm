@@ -8,9 +8,9 @@ namespace TSP_Problem.Services
 {
     public class RandomGeneratorNumbersService
     {
-        private static readonly Random _Random = new();
+        public static readonly Random _Random = new();
 
-        public int[] GetUniqueInts(int length, int min, int max)
+        public virtual int[] GetUniqueInts(int length, int min, int max)
         {
             var diff = max - min;
 
@@ -38,5 +38,11 @@ namespace TSP_Problem.Services
         {
             return _Random.Next(min, max);
         }
+
+        public double GetDouble()
+        {
+            return _Random.NextDouble();
+        }
+
     }
 }
