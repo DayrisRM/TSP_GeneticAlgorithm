@@ -41,3 +41,17 @@ var TournamentSelectionService = new TournamentSelectionService(initialNumberPop
 var tournamentResult = TournamentSelectionService.Select(initialPopulation.Individuals);
 
 //cruce parcialmente mapeado
+var CrossoverService = new CrossoverService();
+var elements = CrossoverService.SelectParentsAndCrossIfPossible(tournamentResult);
+//mutación
+var MutationService = new MutationService();
+var mutatedElements = MutationService.Mutate(elements);
+//evaluar los elementos mutados
+foreach (var ind in mutatedElements)
+{
+    FitnessCalculatorService.Evaluate(ind);
+}
+
+//selección de supervivientes
+var ElitistSurvivorsSelectionService = new ElitistSurvivorsSelectionService();
+var newPopulation = ElitistSurvivorsSelectionService.SelectIndividuals(initialPopulation.Individuals, mutatedElements);
