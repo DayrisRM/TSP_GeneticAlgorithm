@@ -13,8 +13,7 @@ namespace TSP_Problem_UnitTests
 
         [Test]
         public void GetUniqueInts_WithBadLength_ShouldThrowArgumentOutOfRangeException()
-        {
-            var randomPopulationInitializer = new RandomPopulationInitializerService();
+        {            
             var length = 131;
             var min = 1;
             var max = 131;
@@ -23,8 +22,7 @@ namespace TSP_Problem_UnitTests
 
         [Test]
         public void GetUniqueInts_WithCorrectParameters_ShouldReturnArray()
-        {
-            var randomPopulationInitializer = new RandomPopulationInitializerService();
+        {            
             var length = 131;
             var min = 1;
             var max = 132;
@@ -36,7 +34,6 @@ namespace TSP_Problem_UnitTests
         [Test]
         public void GetUniqueInts_WithCorrectParameters_ShouldHaveMinAndMaxValues()
         {
-            var randomPopulationInitializer = new RandomPopulationInitializerService();
             var length = 131;
             var min = 1;
             var max = 132;

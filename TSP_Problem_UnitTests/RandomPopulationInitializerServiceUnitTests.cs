@@ -6,8 +6,7 @@ using TSP_Problem.Services;
 namespace TSP_Problem_UnitTests
 {
     public class RandomPopulationInitializerServiceUnitTests
-    {
-        
+    {        
 
         [Test]
         public void Initialize_WithCorrectParameters_ShouldHaveInitialNumberPopulation()
@@ -16,8 +15,8 @@ namespace TSP_Problem_UnitTests
             var numberMaxCities = 131;
             var initialNumberPopulation = 10;
             var randomPopulation = randomPopulationInitializer.Initialize(numberMaxCities, initialNumberPopulation);
-            Assert.IsNotNull(randomPopulation);
-            Assert.AreEqual(initialNumberPopulation, randomPopulation.Individuals.Count);
+            Assert.That(randomPopulation, Is.Not.Null);
+            Assert.That(randomPopulation.CurrentGeneration.Individuals.Count, Is.EqualTo(initialNumberPopulation));
         }
         
         //TODO: Añadir test para comprobar que no añade varios individuos con los mismos valores
