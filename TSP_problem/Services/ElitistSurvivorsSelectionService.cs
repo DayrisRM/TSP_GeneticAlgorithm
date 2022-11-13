@@ -12,10 +12,11 @@ namespace TSP_Problem.Services
     {
         public List<Individual> SelectIndividuals(List<Individual> parents, List<Individual> children)
         {
-            var bestParent = parents.OrderByDescending(x => x.Distance).Take(1).FirstOrDefault();
-            var worstChildren = children.OrderBy(x => x.Distance).Take(1).FirstOrDefault();
+            //TSP is minimization problem; we need the shortest distance
+            var bestParent = parents.OrderBy(x => x.Distance).Take(1).FirstOrDefault();
+            var worstChildren = children.OrderByDescending(x => x.Distance).Take(1).FirstOrDefault();
 
-            if(worstChildren.Distance < bestParent.Distance) 
+            if(worstChildren.Distance > bestParent.Distance) 
             {
                 children.Remove(worstChildren);
                 children.Add(bestParent);

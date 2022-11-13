@@ -41,7 +41,7 @@ namespace TSP_Problem.Services
                 }
                 catch(Exception e) 
                 {
-                    var tt = e.Message;
+                    throw;
                 }
                 
             }

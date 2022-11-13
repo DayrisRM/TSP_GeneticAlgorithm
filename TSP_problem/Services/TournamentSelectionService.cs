@@ -46,10 +46,11 @@ namespace TSP_Problem.Services
             var firstIndividual = individuals[firstIndex];
             var secondIndividual = individuals[secondIndex];
 
+            //TSP is minimization problem; we need the shortest distance
             if (firstIndividual.Distance > secondIndividual.Distance)
-                return firstIndividual;
+                return secondIndividual;
 
-            return secondIndividual;
+            return firstIndividual;
 
         }
 
