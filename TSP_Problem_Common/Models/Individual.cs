@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TSP_Problem.Models
+namespace TSP_Problem_Common.Models
 {
     public class Individual
     {
         public int Id { get; set; }
-        public List<int> Genotype { get; set; } =  new List<int>();
+        public List<int> Genotype { get; set; } = new List<int>();
         public double Distance { get; set; }
 
     }

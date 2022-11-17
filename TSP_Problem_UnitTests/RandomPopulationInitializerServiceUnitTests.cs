@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using TSP_Problem.Models;
+using TSP_Problem_Common.Models;
 using TSP_Problem.Services;
 
 

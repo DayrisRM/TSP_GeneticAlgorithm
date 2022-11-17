@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TSP_Problem.Abstractions;
-using TSP_Problem.Models;
+using TSP_Problem_Common.Models;
 using TSP_Problem.Services;
 
 namespace TSP_Problem_UnitTests

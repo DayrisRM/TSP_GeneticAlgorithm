@@ -7,8 +7,8 @@ using TSP_Problem_Common.Models;
 
 namespace TSP_Problem.Abstractions
 {
-    public interface ISelectionService
+    public interface ISaveGenerationService
     {
-        public List<Individual> Select(List<Individual> individuals);
+        public void SaveGenerationJson(int numberExecution, Population population);
     }
 }

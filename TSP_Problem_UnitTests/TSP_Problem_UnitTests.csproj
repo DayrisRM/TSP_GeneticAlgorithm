@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TSP_problem\TSP_Problem.csproj" />
+    <ProjectReference Include="..\TSP_Problem_Common\TSP_Problem_Common.csproj" />
   </ItemGroup>
 
 </Project>

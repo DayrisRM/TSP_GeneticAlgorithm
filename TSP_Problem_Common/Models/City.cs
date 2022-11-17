@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TSP_Problem.Models
+namespace TSP_Problem_Common.Models
 {
     public class City
     {

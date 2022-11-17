@@ -1,13 +1,16 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using TSP_Problem.Models;
+using TSP_Problem.Abstractions;
 using TSP_Problem.Services;
+using TSP_Problem_Common.Models;
+using TSP_Visualization;
 
 
 //parameters algorithm
 var cityFile = "data_131.txt";
 var initialNumberPopulation = 10;
 var numberMaxCities = 131;
-var numberIterations = 1000;
+var numberIterations = 100;
+var numberExecutions = 10;
 
 var LoadFileCitiesService = new LoadFileCitiesService();
 var cities = LoadFileCitiesService.LoadFile(cityFile);
@@ -22,40 +25,23 @@ var worldData = new WorldData()
     TotalCities = cities.Count,
 };
 
-var GeneticAlgorithmService = new GeneticAlgorithmService(initialNumberPopulation, numberMaxCities, numberIterations, worldData);
-var finalPopulation = GeneticAlgorithmService.EvolveAlgorithm();
-Console.WriteLine("Best Individual: " + finalPopulation.BestIndividual.Distance);
-Console.WriteLine("Generations: " + finalPopulation.Generations.Count);
+ISaveGenerationService JsonSaveGenerationService = new JsonSaveGenerationService();
 
-////generar initial population
-////generar para cada individuo un genotipo que sea una lista de tamaño numberMaxCities con un Random de 0 a 131
-//var RandomPopulationInitializerService = new RandomPopulationInitializerService();
-//var initialPopulation = RandomPopulationInitializerService.Initialize(numberMaxCities, initialNumberPopulation);
+for (var i = 1; i <= numberExecutions; i++)
+{
+    Console.WriteLine("Execution: " + i);
+    var GeneticAlgorithmService = new GeneticAlgorithmService(initialNumberPopulation, numberMaxCities, numberIterations, worldData);
+    var finalPopulation = GeneticAlgorithmService.EvolveAlgorithm();
+    JsonSaveGenerationService.SaveGenerationJson(i, finalPopulation);
 
-////evaluar individuos de población
-////función de fitness
-//var FitnessCalculatorService = new FitnessCalculatorService(worldData);
-//foreach (var ind in initialPopulation.Individuals) 
-//{
-//    FitnessCalculatorService.Evaluate(ind);
-//}
+    Console.WriteLine("Best Individual: " + finalPopulation.BestIndividual.Distance);
+    Console.WriteLine("Generations: " + finalPopulation.Generations.Count);
+    Console.WriteLine("------");
+    Console.WriteLine();
+}
 
-////selección de padres por torneo
-//var TournamentSelectionService = new TournamentSelectionService(initialNumberPopulation);
-//var tournamentResult = TournamentSelectionService.Select(initialPopulation.Individuals);
+//create plots
+CreatePlot createPlot = new CreatePlot(numberExecutions, numberIterations);
+createPlot.CreateProgressCurve();
 
-////cruce parcialmente mapeado
-//var CrossoverService = new CrossoverService();
-//var elements = CrossoverService.SelectParentsAndCrossIfPossible(tournamentResult);
-////mutación
-//var MutationService = new MutationService();
-//var mutatedElements = MutationService.Mutate(elements);
-////evaluar los elementos mutados
-//foreach (var ind in mutatedElements)
-//{
-//    FitnessCalculatorService.Evaluate(ind);
-//}
 
-////selección de supervivientes
-//var ElitistSurvivorsSelectionService = new ElitistSurvivorsSelectionService();
-//var newPopulation = ElitistSurvivorsSelectionService.SelectIndividuals(initialPopulation.Individuals, mutatedElements);
