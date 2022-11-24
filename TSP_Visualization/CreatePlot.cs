@@ -16,9 +16,8 @@ namespace TSP_Visualization
             _numberIterations = numberIterations;
         }       
 
-        public void CreateProgressCurve() 
-        {
-            var savedPopulations = GetSavedPopulations();
+        public void CreateProgressCurve(List<Population> savedPopulations) 
+        {            
 
             if(savedPopulations.Count != _numberExecutions)
                 throw new Exception("Generations invalid");
@@ -51,36 +50,6 @@ namespace TSP_Visualization
 
             plt.SaveFig(@"../../../Data/figures/progress_curve.png");
 
-        }
-
-        private List<Population> GetSavedPopulations() 
-        {
-            var pathFolder = @"../../../Data/generations/";
-            var savedPopulation = new List<Population>();
-
-            for(int i = 1; i <= _numberExecutions; i++) 
-            {
-                var fileName = $"{i}_population.json";
-
-                var population = LoadJson(pathFolder + fileName);
-                savedPopulation.Add(population);               
-            }
-
-            return savedPopulation;
-        }
-
-        private Population LoadJson(string pathFile)
-        {
-            using (StreamReader r = new StreamReader(pathFile))
-            {
-                string json = r.ReadToEnd();
-                var population = JsonConvert.DeserializeObject<Population>(json);
-
-                if (population == null)
-                    throw new Exception("Json invalid");
-
-                return population;
-            }
         }
         
     }

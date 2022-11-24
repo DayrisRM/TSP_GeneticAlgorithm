@@ -1,36 +1,67 @@
-﻿// See https://aka.ms/new-console-template for more information
-using TSP_Problem.Abstractions;
+﻿using TSP_Problem.Abstractions;
 using TSP_Problem.Services;
 using TSP_Problem_Common.Models;
 using TSP_Visualization;
 
-
-//parameters algorithm
-var cityFile = "data_131.txt";
-var initialNumberPopulation = 10;
-var numberMaxCities = 131;
-var numberIterations = 100;
-var numberExecutions = 10;
-
-var LoadFileCitiesService = new LoadFileCitiesService();
-var cities = LoadFileCitiesService.LoadFile(cityFile);
-if(cities.Count != numberMaxCities) 
-{
-    throw new Exception("The count of loaded cities is diferent from numberMaxCities");
-}
-
-var worldData = new WorldData() 
+//create type of executions
+var simpleExecution = new ExecutionGA() 
 { 
-    Cities = cities,
-    TotalCities = cities.Count,
+    CityFile = "data_131.txt",
+    InitialNumberPopulation = 50,
+    NumberMaxCities = 131,
+    NumberIterations = 1000,
+    NumberExecutions = 10,
+    FitnessBestSolution = 564,
 };
 
+var advanceExecution = new ExecutionGA() 
+{
+    CityFile = "data_10k.txt",
+    InitialNumberPopulation = 10,
+    NumberMaxCities = 131,
+    NumberIterations = 100,
+    NumberExecutions = 10
+};
+
+
+//Parameters of GA
+Console.WriteLine("<---- Welcome to TSP Genetic Algorithm ---->");
+Console.WriteLine();
+
+Console.WriteLine("Choose option:");
+Console.WriteLine($"A - Simple execution. ({simpleExecution.NumberMaxCities } cities - {simpleExecution.NumberIterations} iterations - {simpleExecution.NumberExecutions} executions - {simpleExecution.InitialNumberPopulation} initialNumberPopulation)");
+Console.WriteLine($"B - Advance execution. ({advanceExecution.NumberMaxCities} cities - {advanceExecution.NumberIterations} iterations - {advanceExecution.NumberExecutions} executions - {advanceExecution.InitialNumberPopulation} initialNumberPopulation)");
+
+var optionSelected = Console.ReadLine();
+
+ExecutionGA parametersGA = new();
+
+if(optionSelected.ToLower() == "a") 
+{
+    parametersGA = simpleExecution;
+}
+else if (optionSelected.ToLower() == "b")
+{
+    parametersGA = advanceExecution;
+}
+else 
+{
+    Console.WriteLine("Please select a correct option");
+}
+
+//Load cities
+var worldData = LoadCitiesFromFile(parametersGA);
+
+//Initialize timer
+var watch = System.Diagnostics.Stopwatch.StartNew();
+
+//Call to GA
 ISaveGenerationService JsonSaveGenerationService = new JsonSaveGenerationService();
 
-for (var i = 1; i <= numberExecutions; i++)
+for (var i = 1; i <= parametersGA.NumberExecutions; i++)
 {
     Console.WriteLine("Execution: " + i);
-    var GeneticAlgorithmService = new GeneticAlgorithmService(initialNumberPopulation, numberMaxCities, numberIterations, worldData);
+    var GeneticAlgorithmService = new GeneticAlgorithmService(parametersGA.InitialNumberPopulation, parametersGA.NumberMaxCities, parametersGA.NumberIterations, worldData);
     var finalPopulation = GeneticAlgorithmService.EvolveAlgorithm();
     JsonSaveGenerationService.SaveGenerationJson(i, finalPopulation);
 
@@ -40,8 +71,60 @@ for (var i = 1; i <= numberExecutions; i++)
     Console.WriteLine();
 }
 
-//create plots
-CreatePlot createPlot = new CreatePlot(numberExecutions, numberIterations);
-createPlot.CreateProgressCurve();
+//Finish timer
+watch.Stop();
+var elapsedMs = watch.ElapsedMilliseconds;
+var elapsedMinutes = TimeSpan.FromMilliseconds(elapsedMs).TotalMinutes;
+Console.WriteLine($"Elapsed time in milliseconds:{elapsedMs}");
+Console.WriteLine($"Elapsed time in minutes:{elapsedMinutes}");
+
+//Get Saved execution-population
+ILoadExecution<List<Population>> JsonLoadExecutionService = new JsonLoadExecutionService(parametersGA.NumberExecutions);
+var savedPopulation = JsonLoadExecutionService.Load();
+
+//Calculate VAMM
+IEvaluator<List<Population>, double> VAMMEvaluatorService = new VAMMEvaluatorService();
+var vammGA = VAMMEvaluatorService.Evaluate(savedPopulation);
+
+Console.WriteLine($"VAMM:{vammGA}");
+
+//Create Plots
+Console.WriteLine("Generating plots...");
+CreatePlot createPlot = new CreatePlot(parametersGA.NumberExecutions, parametersGA.NumberIterations);
+createPlot.CreateProgressCurve(savedPopulation);
+
+Console.WriteLine("Generated plots in /Data/figures");
 
 
+
+
+//auxiliar functions
+WorldData LoadCitiesFromFile(ExecutionGA parametersGA) 
+{
+    var LoadFileCitiesService = new LoadFileCitiesService();
+    var cities = LoadFileCitiesService.LoadFile(parametersGA.CityFile);
+    if (cities.Count != parametersGA.NumberMaxCities)
+    {
+        throw new Exception("The count of loaded cities is diferent from numberMaxCities");
+    }
+
+    var worldData = new WorldData()
+    {
+        Cities = cities,
+        TotalCities = cities.Count,
+    };
+
+    return worldData;
+}
+
+
+
+public class ExecutionGA 
+{
+    public string CityFile { get; set; }
+    public int InitialNumberPopulation { get; set; }
+    public int NumberMaxCities { get; set; }
+    public int NumberIterations { get; set; }
+    public int NumberExecutions { get; set; }
+    public int FitnessBestSolution { get; set; }
+}
