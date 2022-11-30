@@ -15,6 +15,8 @@ namespace TSP_Problem.Services
         private int _numberMaxCities { get; set; }
         private int _numberIterations { get; set; }
         private WorldData _worldData { get; set; }
+        private double _crossoverProbability { get; set; }
+        private double _mutationProbability { get; set; }
 
         //Services
         private IPopulationInitializerService PopulationInitializerService { get; set; }
@@ -27,20 +29,22 @@ namespace TSP_Problem.Services
 
 
 
-        public GeneticAlgorithmService(int initialNumberPopulation, int numberMaxCities, int numberIterations, WorldData worldData)
+        public GeneticAlgorithmService(int initialNumberPopulation, int numberMaxCities, int numberIterations, WorldData worldData, double crossoverProbability, double mutationProbability)
         {
             _initialNumberPopulation = initialNumberPopulation > 0 ? initialNumberPopulation : throw new ArgumentOutOfRangeException(nameof(initialNumberPopulation));
             _numberMaxCities = numberMaxCities > 0 ? numberMaxCities : throw new ArgumentOutOfRangeException(nameof(numberMaxCities));
             _numberIterations = numberIterations > 0 ? numberIterations : throw new ArgumentOutOfRangeException(nameof(numberIterations));
             _worldData = worldData ?? throw new ArgumentNullException(nameof(worldData));
+            _crossoverProbability = crossoverProbability;
+            _mutationProbability = mutationProbability;
 
             PopulationInitializerService = new RandomPopulationInitializerService();
             FitnessCalculatorService = new FitnessCalculatorService(_worldData);
             TournamentSelectionService = new TournamentSelectionService(_initialNumberPopulation);
-            CrossoverService = new CrossoverService();
-            MutationService = new MutationService();
+            CrossoverService = new CrossoverService(_crossoverProbability);
+            MutationService = new MutationService(_mutationProbability);
             ElitistSurvivorsSelectionService = new ElitistSurvivorsSelectionService();
-            PopulationService = new PopulationService();
+            PopulationService = new PopulationService();            
         }
 
         public Population EvolveAlgorithm() 

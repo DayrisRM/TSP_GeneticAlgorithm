@@ -10,18 +10,19 @@ namespace TSP_Problem.Services
 {
     public class CrossoverService
     {
-        private const double CrossoverProbability = 1;
-
         private const int NumberOfParents = 2;
+
+        private double _crossoverProbability { get; set; }
 
         private ICrossoverService _partiallyMappedCrossoverService { get; set; }
 
         private RandomGeneratorNumbersService _randomGeneratorNumbersService { get; set; }
 
-        public CrossoverService()
+        public CrossoverService(double crossoverProbability)
         {
             _partiallyMappedCrossoverService = new PartiallyMappedCrossoverService();
             _randomGeneratorNumbersService = new RandomGeneratorNumbersService();
+            _crossoverProbability = crossoverProbability;
         }
 
         public List<Individual> SelectParentsAndCrossIfPossible(List<Individual> parents) 
@@ -39,7 +40,7 @@ namespace TSP_Problem.Services
                 //TODO: check if parents are equal. if equal do something
 
                 var p = _randomGeneratorNumbersService.GetDouble();
-                if(p <= CrossoverProbability) 
+                if(p <= _crossoverProbability) 
                 {
                     var crossoverResult = _partiallyMappedCrossoverService.Cross(new List<Individual>() { parent1, parent2 });
                     chields.AddRange(crossoverResult);

@@ -49,6 +49,12 @@ else
     Console.WriteLine("Please select a correct option");
 }
 
+
+//TODO: crear una lista de combinaciones de probabilidades a probar.
+//Add probabilities
+parametersGA.MutationProbability = 1;
+parametersGA.CrossoverProbability = 1;
+
 //Load cities
 var worldData = LoadCitiesFromFile(parametersGA);
 
@@ -61,7 +67,7 @@ ISaveGenerationService JsonSaveGenerationService = new JsonSaveGenerationService
 for (var i = 1; i <= parametersGA.NumberExecutions; i++)
 {
     Console.WriteLine("Execution: " + i);
-    var GeneticAlgorithmService = new GeneticAlgorithmService(parametersGA.InitialNumberPopulation, parametersGA.NumberMaxCities, parametersGA.NumberIterations, worldData);
+    var GeneticAlgorithmService = new GeneticAlgorithmService(parametersGA.InitialNumberPopulation, parametersGA.NumberMaxCities, parametersGA.NumberIterations, worldData, parametersGA.CrossoverProbability, parametersGA.MutationProbability);
     var finalPopulation = GeneticAlgorithmService.EvolveAlgorithm();
     JsonSaveGenerationService.SaveGenerationJson(i, finalPopulation);
 
@@ -90,7 +96,7 @@ Console.WriteLine($"VAMM:{vammGA}");
 
 //Create Plots
 Console.WriteLine("Generating plots...");
-CreatePlot createPlot = new CreatePlot(parametersGA.NumberExecutions, parametersGA.NumberIterations);
+CreatePlot createPlot = new CreatePlot(parametersGA.NumberExecutions, parametersGA.NumberIterations, parametersGA.CrossoverProbability, parametersGA.MutationProbability);
 createPlot.CreateProgressCurve(savedPopulation);
 
 Console.WriteLine("Generated plots in /Data/figures");
@@ -127,4 +133,6 @@ public class ExecutionGA
     public int NumberIterations { get; set; }
     public int NumberExecutions { get; set; }
     public int FitnessBestSolution { get; set; }
+    public double MutationProbability { get; set; }
+    public double CrossoverProbability { get; set; }
 }

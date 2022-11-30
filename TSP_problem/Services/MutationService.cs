@@ -10,16 +10,17 @@ namespace TSP_Problem.Services
 {
     public class MutationService
     {
-        private const double MutationProbability = 1;
+        private double _mutationProbability { get; set; }
 
         private RandomGeneratorNumbersService _randomGeneratorNumbersService { get; set; }
 
         private SwapMutationService _swapMutationService { get; set; }
 
-        public MutationService()
+        public MutationService(double mutationProbability)
         {
             _randomGeneratorNumbersService = new RandomGeneratorNumbersService();
             _swapMutationService = new SwapMutationService();
+            _mutationProbability = mutationProbability;
         }
 
         public MutationService(RandomGeneratorNumbersService randomGeneratorNumbersService, SwapMutationService swapMutationService)
@@ -39,7 +40,7 @@ namespace TSP_Problem.Services
             {
                 var p = _randomGeneratorNumbersService.GetDouble();
 
-                if(p < MutationProbability) 
+                if(p < _mutationProbability) 
                 {
                     _swapMutationService.Mutate(individual.Genotype);                    
                 }

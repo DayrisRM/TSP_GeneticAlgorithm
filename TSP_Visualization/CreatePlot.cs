@@ -9,11 +9,15 @@ namespace TSP_Visualization
     {
         private int _numberExecutions { get; set; }
         private int _numberIterations { get; set; }
+        private double _crossoverProbability { get; set; }
+        private double _mutationProbability { get; set; }
 
-        public CreatePlot(int numberExecutions, int numberIterations)
+        public CreatePlot(int numberExecutions, int numberIterations, double crossoverProbability, double mutationProbability)
         {
             _numberExecutions = numberExecutions;
             _numberIterations = numberIterations;
+            _crossoverProbability = crossoverProbability;
+            _mutationProbability = mutationProbability;
         }       
 
         public void CreateProgressCurve(List<Population> savedPopulations) 
@@ -44,9 +48,11 @@ namespace TSP_Visualization
             var plt = new ScottPlot.Plot();
             plt.AddScatter(xCoor.ToArray(), yCoor.ToArray());
 
-            plt.Title("Curva de progreso");
+            var title = $"Curva de progreso -- nExecutions:{_numberExecutions}--nGenerations:{_numberIterations}--mutationProb:{_mutationProbability}--crossoverProb:{_crossoverProbability}";
+            plt.Title(title);
             plt.YLabel("Fitness");
             plt.XLabel("Generaciones");
+            
 
             plt.SaveFig(@"../../../Data/figures/progress_curve.png");
 

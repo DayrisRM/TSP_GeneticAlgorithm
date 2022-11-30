@@ -10,7 +10,8 @@ namespace TSP_Problem_UnitTests
 {
     public class CrossoverServiceUnitTests
     {
-        CrossoverService _crossoverService = new();
+        private const double _crossoverProbability = 1;
+        CrossoverService _crossoverService = new(_crossoverProbability);
 
         [Test]
         public void CrossoverService_SelectWithEmptyParents_ShouldThrow()

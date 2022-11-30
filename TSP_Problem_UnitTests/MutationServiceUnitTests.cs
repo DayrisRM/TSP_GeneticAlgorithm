@@ -12,7 +12,9 @@ namespace TSP_Problem_UnitTests
 {
     public class MutationServiceUnitTests
     {
-        private MutationService _mutationService = new MutationService();
+        private const double _mutationProbability = 1;
+
+        private MutationService _mutationService = new MutationService(_mutationProbability);
 
         [Test]
         public void MutationService_Mutate_ShouldThrow()
