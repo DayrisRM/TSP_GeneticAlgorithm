@@ -17,9 +17,8 @@ namespace TSP_Problem_UnitTests
             var randomPopulation = randomPopulationInitializer.Initialize(numberMaxCities, initialNumberPopulation);
             Assert.That(randomPopulation, Is.Not.Null);
             Assert.That(randomPopulation.CurrentGeneration.Individuals.Count, Is.EqualTo(initialNumberPopulation));
-        }
+        }       
         
-        //TODO: Añadir test para comprobar que no añade varios individuos con los mismos valores
 
     }
 }

@@ -37,6 +37,11 @@ namespace TSP_Problem.Services
                     throw new Exception("Cities indexes must not be null");
                 }
 
+                if (citiesIndexes.Distinct().Count() != numberMaxCities) 
+                {
+                    throw new Exception("Repeated cities in the initialization");
+                }
+
                 var individual = new Individual()
                 {
                     Id = i,

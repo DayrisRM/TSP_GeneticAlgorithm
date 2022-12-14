@@ -59,20 +59,48 @@ namespace TSP_Problem.Services
             var actualIteration = 1;
             while (actualIteration <= _numberIterations) 
             {
+                Console.WriteLine("Iteration " + actualIteration);
+
                 //select parents by tournament              
                 var tournamentResult = TournamentSelectionService.Select(population.CurrentGeneration.Individuals);
 
-                //cross parents by partially mapped
+                var checkPoint = CheckIndividualHasRepeatedGene(tournamentResult);
+                if (checkPoint.Item1 == true)
+                {
+                    throw new Exception("IndividualHasRepeatedGene GA1");
+                }
+
+                //cross parents by partially mapped               
                 var crossResult = CrossoverService.SelectParentsAndCrossIfPossible(tournamentResult);
+
+                var checkPoint2 = CheckIndividualHasRepeatedGene(crossResult);
+                if (checkPoint2.Item1 == true)
+                {
+                    throw new Exception("IndividualHasRepeatedGene GA2");
+                }
+
 
                 //mutate using swap mutation
                 var mutatedElements = MutationService.Mutate(crossResult);
+
+                var checkPoint3 = CheckIndividualHasRepeatedGene(mutatedElements);
+                if (checkPoint3.Item1 == true)
+                {
+                    throw new Exception("IndividualHasRepeatedGene GA3");
+                }
 
                 //evaluate mutated elements
                 CalculateFitness(mutatedElements);
 
                 //select survivors
                 var newIndividuals = ElitistSurvivorsSelectionService.SelectIndividuals(population.CurrentGeneration.Individuals, mutatedElements);
+
+                var checkPoint4 = CheckIndividualHasRepeatedGene(newIndividuals);
+                if (checkPoint4.Item1 == true)
+                {
+                    throw new Exception("IndividualHasRepeatedGene GA4");
+                }
+
 
                 //add new generation to population
                 PopulationService.CreateNewGeneration(population, newIndividuals);
@@ -84,12 +112,31 @@ namespace TSP_Problem.Services
 
         private void CalculateFitness(List<Individual> individuals) 
         {
-            foreach (var ind in individuals)
+            Parallel.ForEach(individuals, ind =>
             {
                 FitnessCalculatorService.Evaluate(ind);
             }
+            );            
         }
-        
+
+        private Tuple<bool, List<Individual>> CheckIndividualHasRepeatedGene(List<Individual> individuals) 
+        {
+            var hasRepeated = false;
+            var individualWithRepeatedGene = new List<Individual>();
+
+            foreach (var ind in individuals) 
+            {
+                var notRepeatedGenesLength = ind.Genotype.Distinct().Count();
+
+                if (notRepeatedGenesLength < ind.Genotype.Count)
+                {
+                    hasRepeated = true;
+                    individualWithRepeatedGene.Add(ind);
+                }
+            }            
+
+            return new Tuple<bool, List<Individual>>(hasRepeated, individualWithRepeatedGene);
+        }
 
     }
 }

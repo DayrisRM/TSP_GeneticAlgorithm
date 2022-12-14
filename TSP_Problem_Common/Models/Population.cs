@@ -13,9 +13,6 @@ namespace TSP_Problem_Common.Models
         public List<Generation> Generations { get; set; } = new List<Generation>();
 
         public Individual BestIndividual { get; set; }
-
-
-        //delete this field after changes
-        //public List<Individual> Individuals { get; set; } = new List<Individual>();
+        
     }
 }

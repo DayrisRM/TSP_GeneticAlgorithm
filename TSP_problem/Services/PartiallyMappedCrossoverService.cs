@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace TSP_Problem.Services
 {
     public class PartiallyMappedCrossoverService : ICrossoverService
     {
-        private RandomGeneratorNumbersService _randomGeneratorNumbersService { get; set; }
+        private RandomGeneratorNumbersService _randomGeneratorNumbersService { get; set; }       
 
         public PartiallyMappedCrossoverService()
         {
@@ -24,6 +25,19 @@ namespace TSP_Problem.Services
 
         public List<Individual> Cross(List<Individual> parents)
         {
+            var checkPoint = CheckIndividualHasRepeatedGene(parents);
+            if (checkPoint.Item1 == true)
+            {
+                var pepe = checkPoint.Item2[0].Genotype.GroupBy(x => x)
+                     .Where(g => g.Count() > 1)
+                     .Select(x => x.Key)
+                     .ToList();
+
+                throw new Exception("IndividualHasRepeatedGene checkpoint1");
+            }
+
+
+
             var descendants = new List<Individual>();
 
             var parent1 = parents[0];
@@ -51,15 +65,29 @@ namespace TSP_Problem.Services
                     continue;
                 }
 
-                var geneForChild1 = GetGeneNotInMappingSection(parent1.Genotype[i], parent2CuttedSegment, parent1CuttedSegment);
+                int x1 = 0;                
+                var geneForChild1 = GetGeneNotInMappingSection(parent1.Genotype[i], parent2CuttedSegment, parent1CuttedSegment, x1);
                 ReplaceGene(i, geneForChild1, child1);
 
-                var geneForChild2 = GetGeneNotInMappingSection(parent2.Genotype[i], parent1CuttedSegment, parent2CuttedSegment);
+                int y1 = 0;               
+                var geneForChild2 = GetGeneNotInMappingSection(parent2.Genotype[i], parent1CuttedSegment, parent2CuttedSegment, y1);
                 ReplaceGene(i, geneForChild2, child2);
             }
 
             descendants.Add(new Individual() { Genotype = child1 });
             descendants.Add(new Individual() { Genotype = child2 });
+
+
+            var checkPoint2 = CheckIndividualHasRepeatedGene(descendants);
+            if (checkPoint2.Item1 == true)
+            {
+                var pepe = checkPoint2.Item2[0].Genotype.GroupBy(x => x)
+                     .Where(g => g.Count() > 1)
+                     .Select(x => x.Key)
+                     .ToList();
+
+                throw new Exception("IndividualHasRepeatedGene checkpoint2");
+            }
 
             return descendants;
         }
@@ -97,18 +125,24 @@ namespace TSP_Problem.Services
                 .ToList();
         }
         
-        private int GetGeneNotInMappingSection(int candidateGene, List<int> mappingSection, List<int> otherParentMappingSection)
+        private int GetGeneNotInMappingSection(int candidateGene, List<int> mappingSection, List<int> otherParentMappingSection, int numberIteracion)
         {
-            var indexOnMappingSection = mappingSection
-                .Select((item, index) => new { Gene = item, Index = index })
-                .FirstOrDefault(g => g.Gene.Equals(candidateGene));
-
-            if (indexOnMappingSection != null)
+                
+            numberIteracion++;
+            
+            if (numberIteracion > 1000)
             {
-                return GetGeneNotInMappingSection(otherParentMappingSection[indexOnMappingSection.Index], mappingSection, otherParentMappingSection);
+                throw new Exception("GetGeneNotInMappingSection exception");
+            }
+            
+            int index = mappingSection.FindIndex(a => a == candidateGene);
+            if (index == -1) 
+            {
+                return candidateGene;
             }
 
-            return candidateGene;
+            return GetGeneNotInMappingSection(otherParentMappingSection[index], mappingSection, otherParentMappingSection, numberIteracion);
+
         }
         
         private void ReplaceGene(int position, int value, List<int> genotype) 
@@ -118,6 +152,25 @@ namespace TSP_Problem.Services
 
             genotype[position] = value;
         }
-    
+
+
+        private Tuple<bool, List<Individual>> CheckIndividualHasRepeatedGene(List<Individual> individuals)
+        {
+            var hasRepeated = false;
+            var individualWithRepeatedGene = new List<Individual>();
+            Parallel.ForEach(individuals, ind =>
+            {
+                var notRepeatedGenesLength = ind.Genotype.Distinct().Count();
+
+                if (notRepeatedGenesLength < ind.Genotype.Count)
+                {
+                    hasRepeated = true;
+                    individualWithRepeatedGene.Add(ind);
+                }
+            });
+
+            return new Tuple<bool, List<Individual>>(hasRepeated, individualWithRepeatedGene);
+        }
+
     }
 }

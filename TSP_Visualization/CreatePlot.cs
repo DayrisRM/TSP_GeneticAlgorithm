@@ -52,9 +52,13 @@ namespace TSP_Visualization
             plt.Title(title);
             plt.YLabel("Fitness");
             plt.XLabel("Generaciones");
-            
 
-            plt.SaveFig(@"../../../Data/figures/progress_curve.png");
+            var pc = _mutationProbability.ToString().Replace('.', '_');
+            var pm = _crossoverProbability.ToString().Replace('.', '_');
+            var fileName = $"progress_curve_pc{pc}__pm{pm}.png";           
+
+
+            plt.SaveFig(@"../../../Data/figures/" + fileName);
 
         }
         

@@ -45,3 +45,6 @@
 /TSP_Visualization/obj/TSP_Visualization.csproj.nuget.g.targets
 /TSP_Problem_Common/obj/Debug/net6.0/TSP_Problem_Common.csproj.FileListAbsolute.txt
 /TSP_Visualization/obj/Debug/net6.0/TSP_Visualization.csproj.FileListAbsolute.txt
+/TSP_problem/Data/figures/*.png
+/TSP_problem/Data/figures/progress_curve.png
+/TSP_problem/Data/generations

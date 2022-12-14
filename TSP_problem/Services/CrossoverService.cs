@@ -47,7 +47,7 @@ namespace TSP_Problem.Services
                 }
                 else 
                 {
-                    //Include parents to chields
+                    //Include parents to childs
                     chields.Add(parent1);
                     chields.Add(parent2);
                 }

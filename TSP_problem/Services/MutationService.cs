@@ -34,17 +34,17 @@ namespace TSP_Problem.Services
         public List<Individual> Mutate(List<Individual> individuals)
         {
             if (!individuals.Any())
-                throw new ArgumentNullException(nameof(individuals));
+                throw new ArgumentNullException(nameof(individuals));           
 
-            foreach (var individual in individuals) 
+            foreach (var individual in individuals)
             {
                 var p = _randomGeneratorNumbersService.GetDouble();
 
-                if(p < _mutationProbability) 
+                if (p < _mutationProbability)
                 {
-                    _swapMutationService.Mutate(individual.Genotype);                    
+                    _swapMutationService.Mutate(individual.Genotype);
                 }
-                
+
             }
 
             return individuals;

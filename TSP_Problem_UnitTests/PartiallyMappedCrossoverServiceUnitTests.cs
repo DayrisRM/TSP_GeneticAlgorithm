@@ -83,5 +83,7 @@ namespace TSP_Problem_UnitTests
             Assert.AreEqual(genotype[6], 5);
             Assert.AreEqual(genotype[7], 8);
         }
+
+
     }
 }
